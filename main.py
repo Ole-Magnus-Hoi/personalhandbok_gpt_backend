@@ -14,6 +14,30 @@ DB: List[Person] = [
     Person(id=2,name="Jens",age=19)
 ]
 
+todos = [
+    {
+        "id": "1",
+        "item": "Read a book."
+    },
+    {
+        "id": "2",
+        "item": "Cycle around town."
+    }
+]
+
+answer = ""
+
+@app.get("/todo", tags=["todos"])
+async def get_todos() -> dict:
+    return { "data": todos }
+
+@app.post("/todo", tags=["todos"])
+async def add_todo(todo: dict) -> dict:
+    todos.append(todo)
+    return {
+        "data": { "Todo added." }
+    }
+
 @app.get("/api")
 def read_root():
     return DB
