@@ -1,43 +1,29 @@
 from typing import List
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
+from gptfy import get_response
 
 app = FastAPI()
 
-class Person(BaseModel):
-    id: int
-    name: str
-    age: int
+#class History(BaseModel):
+#    question: str
+#    answer: str
+#DB: List[History] = []
+class Question(BaseModel):
+    question: str
 
-DB: List[Person] = [
-    Person(id=1, name="Ole-Magnus", age=22),
-    Person(id=2,name="Jens",age=19)
-]
+def process_question(quest: str) -> str:
+  return "Ditt spørsmål vil ikke bli besvart."#get_response(quest) <- Blir dyrt å kjøre hver gang
 
-todos = [
-    {
-        "id": "1",
-        "item": "Read a book."
-    },
-    {
-        "id": "2",
-        "item": "Cycle around town."
-    }
-]
-
-answer = ""
-
-@app.get("/todo", tags=["todos"])
-async def get_todos() -> dict:
-    return { "data": todos }
-
-@app.post("/todo", tags=["todos"])
-async def add_todo(todo: dict) -> dict:
-    todos.append(todo)
-    return {
-        "data": { "Todo added." }
-    }
+@app.post("/question", tags=["question"])
+async def add_question(q: Question) -> str:
+    try:
+        answer = process_question(q.question)
+        #DB.append(History(question=q.question, answer=answer))
+        return answer
+    except Exception as e:
+       raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/api")
 def read_root():
-    return DB
+    return "Placeholder for DB"#DB
