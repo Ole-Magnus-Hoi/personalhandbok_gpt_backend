@@ -13,7 +13,7 @@ class Question(BaseModel):
     question: str
 
 def process_question(quest: str) -> str:
-  return get_response(quest)# <- Blir dyrt å kjøre hver gang
+  return "Har ikke råd til å svare akkurat nå"#get_response(quest)# <- Blir dyrt å kjøre hver gang
 
 @app.post("/question", tags=["question"])
 async def add_question(q: Question) -> str:
