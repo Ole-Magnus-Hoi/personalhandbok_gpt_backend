@@ -11,6 +11,12 @@ For øyeblikket brukes kun clusters fra weaviate med varighet 14 dager. Må derf
 Leser over pdf-ene og lager litt mindre biter av det. Bruker embedding til open ai for å finne en plass til det i databasen.
 Er ikke ment å kjøre i "prod", men fint å ha med resten av repoet.
 """
+
+openai_key = os.getenv('OPENAI_KEY')
+weaviate_key = os.getenv('WEAVIATE_KEY')
+weaviate_url = os.getenv('WEAVIATE_URL')
+openai.api_key = os.getenv('OPENAI_KEY')
+
 pdf_dir = 'pdf_data'
 
 pdf_data = {}
@@ -61,10 +67,10 @@ with open('output.json', 'w') as f:
 openai.api_key = os.environ["OPENAI_KEY"]
 
 client = weaviate.Client(
-    url="https://test-for-weaviate-gpt-knhmwoow.weaviate.network",  # Replace with your endpoint
-    auth_client_secret=weaviate.auth.AuthApiKey(api_key="lIN7uSXMu4UHbxxwFn26ONMMEsf261KUktn5"),
+    url=weaviate_url,
+    auth_client_secret=weaviate.auth.AuthApiKey(api_key=weaviate_key),
     additional_headers={
-        "X-OpenAI-Api-Key": "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"
+        "X-OpenAI-Api-Key": openai_key
     }
 )
 

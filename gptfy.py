@@ -2,7 +2,10 @@ import os
 import openai
 import weaviate
 
-openai.api_key = "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"
+openai_key = os.getenv('OPENAI_KEY')
+weaviate_key = os.getenv('WEAVIATE_KEY')
+weaviate_url = os.getenv('WEAVIATE_URL')
+openai.api_key = os.getenv('OPENAI_KEY')
 
 def answer(query: str) -> str:
     res = openai.Completion.create(
@@ -18,10 +21,10 @@ def answer(query: str) -> str:
     return res['choices'][0]['text'].strip()
 
 client = weaviate.Client(
-    url="https://test-for-weaviate-gpt-knhmwoow.weaviate.network",  # Replace with your endpoint
-    auth_client_secret=weaviate.auth.AuthApiKey(api_key="lIN7uSXMu4UHbxxwFn26ONMMEsf261KUktn5"),
+    url=weaviate_url,
+    auth_client_secret=weaviate.auth.AuthApiKey(api_key=weaviate_key),
     additional_headers={
-        "X-OpenAI-Api-Key": "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"
+        "X-OpenAI-Api-Key": openai_key
     }
 )
 
