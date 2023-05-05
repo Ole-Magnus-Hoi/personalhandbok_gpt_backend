@@ -1,3 +1,4 @@
+import os
 from typing import List
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
@@ -8,6 +9,9 @@ app = FastAPI()
 class Question(BaseModel):
     question: str
 
+class Password(BaseModel):
+    password: str
+
 def process_question(quest: str) -> str:
   return get_response(quest)
 
@@ -16,5 +20,14 @@ async def add_question(q: Question) -> str:
     try:
         answer = process_question(q.question)
         return answer
+    except Exception as e:
+       raise HTTPException(status_code=500, detail=str(e))
+    
+@app.post("/password", tags=["password"])
+async def check_passwrod(p: Password) -> bool:
+    try:
+        given_password =p.password
+        password = os.getenv('PASSWORD')
+        return (given_password==password)
     except Exception as e:
        raise HTTPException(status_code=500, detail=str(e))
