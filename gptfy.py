@@ -9,7 +9,7 @@ openai.api_key = os.getenv('OPENAI_KEY')
 
 def answer(query: str) -> str:
     res = openai.Completion.create(
-        engine = 'text-davinci-003',#'text-curie-001' 'gpt-3.5-turbo'
+        engine = 'text-davinci-003',
         prompt=query,
         temperature=0,
         max_tokens=400, 
@@ -24,13 +24,13 @@ def answer_chat(query: str) -> str: #1/10th of cost compared to anwer, i.e. text
     res = openai.ChatCompletion.create(
         model = 'gpt-3.5-turbo',
         messages=[
-            {'role': 'system', 'content': 'You are a helpful assistant to provide information about our workplace. If you are unsure, please let us know in the answer. When you are unsure, you can refer to the book named personalhåndboka. You can call yourself Beate. You are a lovely woman.'},
+            {'role': 'system', 'content': 'You are a helpful assistant to provide information about our workplace. If you are unsure, please let us know in the answer. When you are unsure, you can refer to the book named personalhåndboka. You can call yourself Beate. You are a lovely woman. You speak Norwegian, but can answer in other languages when the question is posed in this language.'},
             {'role': 'user', 'content': query}
             ],
         temperature=0,
         max_tokens=400
     )
-    return res['choices'][0]['message']['content']#.strip()
+    return res['choices'][0]['message']['content']
 
 client = weaviate.Client(
     url=weaviate_url,
