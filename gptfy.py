@@ -9,7 +9,7 @@ openai.api_key = os.getenv('OPENAI_KEY')
 
 def answer(query: str) -> str:
     res = openai.Completion.create(
-        engine = 'text-davinci-003',#'text-curie-001'
+        engine = 'gpt-3.5-turbo',#'text-davinci-003',#'text-curie-001'
         prompt=query,
         temperature=0,
         max_tokens=400, 
