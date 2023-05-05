@@ -24,7 +24,7 @@ def answer_chat(query: str) -> str: #1/10th of cost compared to anwer, i.e. text
     res = openai.ChatCompletion.create(
         model = 'gpt-3.5-turbo',
         messages=[
-            {'role': 'system', 'content': 'You are a helpful assistant to provide information about our workplace. If you are unsure, please let us know in the answer. When you are unsure, you can refer to the book named personalhåndboka.'},
+            {'role': 'system', 'content': 'You are a helpful assistant to provide information about our workplace. If you are unsure, please let us know in the answer. When you are unsure, you can refer to the book named personalhåndboka. You can call yourself Beate. You are a lovely woman.'},
             {'role': 'user', 'content': query}
             ],
         temperature=0,
