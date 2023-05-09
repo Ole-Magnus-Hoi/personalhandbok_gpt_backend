@@ -16,7 +16,7 @@ class Password(BaseModel):
 def process_question(quest: str, hist: list) -> str:
   return get_response(quest, hist)
 
-@app.post("/question", tags=["question"])
+@app.post("/question", tags=['question'])
 async def add_question(q: Question) -> str:
     try:
         answer = process_question(q.question, q.history)
