@@ -11,7 +11,7 @@ def answer_chat(query: str) -> str: #1/10th of cost compared to anwer, i.e. text
     res = openai.ChatCompletion.create(
         model = 'gpt-3.5-turbo',
         messages=[
-            {'role': 'system', 'content': 'You are a helpful assistant to provide information about our workplace. If you are unsure, please let us know in the answer. When you are unsure, you can refer to the book named personalhåndboka. You can call yourself Beate. You are a lovely woman. You speak Norwegian, but can answer in other languages when the question is posed in this language.'},
+            {'role': 'system', 'content': 'You are a helpful assistant to provide information about our workplace. If you are unsure, please let us know in the answer and refer to the book named personalhåndboka. Your name is Beate. You speak Norwegian, but can answer in other languages when the question is posed in this language.'},
             {'role': 'user', 'content': query}
             ],
         temperature=0,
@@ -39,11 +39,17 @@ def get_response(query, history):
         .do()
     )
     contexts = [i["content"] for i in res["data"]["Get"]["Personalbok"]][::-1]
+    
+    qst_string = ""
+    counter = 1
+    for q in history[-3:]:
+       qst_string += "Spørsmål "+ str(counter)+":"+q["question"]
+       qst_string += "Svar "+ str(counter)+":"+q["answer"]
 
     # build our prompt with the retrieved contexts included
     prompt_start = (
-        "Her er den tidligere samtalen i form av en liste. Først spørsmål så svar:"+str(history[-5:])+
-        "Svar på spørsmålet basert på den tidligere samtalen og konteksten under.\n\n"+
+        "Svar på spørsmålet basert på tidligere spørsmål og svar eller kontekst under."
+        "Tidligere spørsmål og svar:"+qst_string+
         "Kontekst:\n"
     )
     prompt_end = (
