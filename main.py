@@ -8,17 +8,18 @@ app = FastAPI()
 
 class Question(BaseModel):
     question: str
+    history: list
 
 class Password(BaseModel):
     password: str
 
-def process_question(quest: str) -> str:
-  return get_response(quest)
+def process_question(quest: str, hist: list) -> str:
+  return get_response(quest, hist)
 
 @app.post("/question", tags=["question"])
 async def add_question(q: Question) -> str:
     try:
-        answer = process_question(q.question)
+        answer = process_question(q.question, q.history)
         return answer
     except Exception as e:
        raise HTTPException(status_code=500, detail=str(e))

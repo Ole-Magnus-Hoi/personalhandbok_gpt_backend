@@ -7,19 +7,6 @@ weaviate_key = os.getenv('WEAVIATE_KEY')
 weaviate_url = os.getenv('WEAVIATE_URL')
 openai.api_key = os.getenv('OPENAI_KEY')
 
-def answer(query: str) -> str:
-    res = openai.Completion.create(
-        engine = 'text-davinci-003',
-        prompt=query,
-        temperature=0,
-        max_tokens=400, 
-        top_p=1,
-        frequency_penalty=0,
-        presence_penalty=0,
-        stop=None
-    )
-    return res['choices'][0]['text'].strip()
-
 def answer_chat(query: str) -> str: #1/10th of cost compared to anwer, i.e. text-davinci
     res = openai.ChatCompletion.create(
         model = 'gpt-3.5-turbo',
@@ -40,7 +27,7 @@ client = weaviate.Client(
     }
 )
 
-def get_response(query):
+def get_response(query, history):
 
     limit = 5000
     # get relevant contexts
@@ -48,15 +35,15 @@ def get_response(query):
         client.query
         .get("Personalbok", ["content"])
         .with_near_text({"concepts": [query]})
-        .with_limit(10)
+        .with_limit(20)
         .do()
     )
     contexts = [i["content"] for i in res["data"]["Get"]["Personalbok"]][::-1]
-    print(contexts)
 
     # build our prompt with the retrieved contexts included
     prompt_start = (
-        "Svar på spørsmålet basert på konteksten under.\n\n"+
+        "Her er den tidligere samtalen i form av en liste. Først spørsmål så svar:"+str(history[-5:])+
+        "Svar på spørsmålet basert på den tidligere samtalen og konteksten under.\n\n"+
         "Kontekst:\n"
     )
     prompt_end = (
@@ -77,4 +64,5 @@ def get_response(query):
                 "\n\n---\n\n".join(contexts) +
                 prompt_end
             )
+    print(prompt)
     return answer_chat(prompt)
